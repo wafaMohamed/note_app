@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/constant.dart';
+
 class NotesListview extends StatelessWidget {
   const NotesListview({super.key});
 
@@ -16,6 +18,8 @@ class NotesListview extends StatelessWidget {
         child: ListTile(
           onTap: () {
             debugPrint('ListTile Tapped');
+            Helper.navigatorPushToDetailsPage(
+                context: context, title: 'Edit Note');
           },
           title: Text('title $index', style: titleStyle),
           subtitle: Text('subtitle $index'),

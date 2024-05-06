@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/constant.dart';
 import '../widgets/notes_listview.dart';
-import 'note_details_page.dart';
 
 class NotePage extends StatelessWidget {
   const NotePage({super.key});
@@ -17,11 +17,8 @@ class NotePage extends StatelessWidget {
       body: const NotesListview(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const NoteDetailsPage(),
-            ),
-          );
+          Helper.navigatorPushToDetailsPage(
+              context: context, title: 'Add Note');
         },
         tooltip: 'F',
         child: Icon(Icons.add),
