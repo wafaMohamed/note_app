@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:note_app/model/note_model.dart';
 
 import '../pages/note_details_page.dart';
 
 class Utils {
   static navigatorPushToDetailsPage(
-      {required String title, required BuildContext context}) {
+      {required String title,
+      required BuildContext context,
+      required Note note}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => NoteDetailsPage(
-          title: title,
-        ),
+        builder: (context) => NoteDetailsPage(title: title, note: note),
       ),
     );
   }

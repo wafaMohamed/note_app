@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../database/database_helper.dart';
 import '../model/note_model.dart';
 import '../utils/utils.dart';
-import '../widgets/notes_listview.dart';
 
 class NotePage extends StatefulWidget {
   const NotePage({super.key});
@@ -15,6 +15,7 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   List<Note>? noteList;
+
   int count = 0;
 
   // return color based on priority
@@ -51,24 +52,75 @@ class _NotePageState extends State<NotePage> {
     // notification
     if (result != 0) {
       Utils.showSnackBar(
-          context: context,
-          message: 'Note Deleted Successfully',
-          backgroundColor: Colors.green);
+        context: context,
+        message: 'Note Deleted Successfully',
+        backgroundColor: Colors.green,
+      );
+      updateListVew();
     }
+  }
+
+  void updateListVew() {
+    final Future<Database> dbFuture = DatabaseHelper.initializeAndOpenDB();
+    dbFuture.then((Database database) {
+      Future<List<Note>> noteListFuture = databaseHelper.getNoteList();
+      noteListFuture.then((List<Note> val) {
+        setState(() {
+          noteList = val;
+          count = val.length;
+        });
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.titleLarge;
-
+    TextStyle titleStyle = Theme.of(context).textTheme.headlineLarge!;
+    final int count = 0;
+    if (noteList == null) {
+      noteList = <Note>[];
+      updateListVew();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Note App'),
       ),
-      body: const NotesListview(),
+      body: ListView.builder(
+        itemCount: count,
+        itemBuilder: (context, index) => Card(
+          color: Colors.white,
+          elevation: 0,
+          child: ListTile(
+            onTap: () {
+              debugPrint('ListTile Tapped');
+              Utils.navigatorPushToDetailsPage(
+                  context: context, title: 'Edit Note', note: noteList![index]);
+            },
+            leading: CircleAvatar(
+              backgroundColor: getPriorityColor(noteList![index].priority),
+              child: getPriorityIcon(noteList![index].priority),
+            ),
+            title: Text(noteList![index].title, style: titleStyle),
+            subtitle: Text(noteList![index].dateTime.toIso8601String()),
+            trailing: GestureDetector(
+              onTap: () {
+                deleteList(noteList![index], context);
+              },
+              child: const Icon(
+                Icons.delete,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Utils.navigatorPushToDetailsPage(context: context, title: 'Add Note');
+          Utils.navigatorPushToDetailsPage(
+            context: context,
+            title: 'Add Note',
+            note: Note('New Note', 2, DateTime.now()),
+          );
         },
         tooltip: 'F',
         child: const Icon(Icons.add),

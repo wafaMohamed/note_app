@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:note_app/pages/note_page.dart';
+import 'package:note_app/pages/shared_prefs.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const NotePage(),
+      home: const MyHomePage(),
+      // home: const NotePage(),
     );
   }
 }
