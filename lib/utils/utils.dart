@@ -13,4 +13,15 @@ class Utils {
       ),
     );
   }
+
+  static showSnackBar(
+      {required String message,
+      required BuildContext context,
+      required Color backgroundColor}) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 2),
+      backgroundColor: backgroundColor,
+    ));
+  }
 }

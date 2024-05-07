@@ -4,6 +4,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../model/note_model.dart';
+
 class DatabaseHelper {
   // Private constructor to prevent direct instantiation
   DatabaseHelper._privateConstructor();
@@ -46,12 +48,47 @@ class DatabaseHelper {
         '$colTitle TEXT, $colDescription TEXT, $colPriority INTEGER, $colDate TEXT)');
   }
 
-  // 1-Fetch Operation: Get all note objects from database
+  // 1- Fetch Operation: Get all note objects from database
   Future<List<Map<String, dynamic>>> getNoteMapList() async {
     Database db = await database;
     // the same but the difference is that we use query instead of rawQuery(SQL statement)
     var result = await db.query(tableNote, orderBy: '$colPriority ASC');
     return result;
     // var result = await db.rawQuery('SELECT * FROM $tableNote order by $colPriority ASC');
+  }
+
+  // 2- Insert Operation: Insert a Note object to database
+  Future<int> insertNote(Note note) async {
+    Database db = await database;
+    // toMap cause the sqlite deals with map objects
+    int result = await db.insert(tableNote, note.toMap());
+    return result;
+  }
+
+  // 3- update Operation: Update a Note object to database
+  Future<int> updateNote(Note note) async {
+    Database db = await database;
+    var result = await db.update(tableNote, note.toMap(),
+        // where to update the note (column)
+        where: '$colID = ?',
+        whereArgs: [note.id]);
+    return result;
+  }
+
+// 4- delete Operation: Delete a Note object from database
+  Future<int> deleteNote(int id) async {
+    Database db = await database;
+    var result =
+        await db.delete(tableNote, where: '$colID = ?', whereArgs: [id]);
+    return result;
+  }
+
+  // get number of (records) Note objects in database
+  Future<int> getCount() async {
+    Database db = await database;
+    List<Map<String, dynamic>> x =
+        await db.rawQuery('SELECT COUNT (*) from $tableNote');
+    int result = Sqflite.firstIntValue(x)!;
+    return result;
   }
 }
