@@ -72,6 +72,8 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
     }
 
     void saveDataToDB() async {
+      Navigator.pop(context, true);
+      widget.note.dateTime = DateTime.now();
       // update operation
       var result = await databaseHelper.updateNote(widget.note);
       if (result != 0) {
@@ -90,6 +92,30 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
         );
       }
       // Insert Operation if it's null // await databaseHelper.insertNote(widget.note);
+    }
+
+    void delete() async {
+      Navigator.pop(context, true);
+      // case1: user want to delete the new note from details page
+      if (widget.note.id != null) {
+        int result = await databaseHelper.deleteNote(widget.note.id);
+        if (result != 0) {
+          // Success
+          Utils.showSnackBar(
+            context: context,
+            message: 'Note Deleted Successfully',
+            backgroundColor: Colors.green,
+          );
+        } else {
+          // Failure
+          Utils.showSnackBar(
+            context: context,
+            message: 'Error Occurred while deleting note',
+            backgroundColor: Colors.red,
+          );
+        }
+      }
+      // case2: user want to delete the old note from Note page
     }
 
     return Scaffold(
@@ -139,7 +165,9 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
               children: [
                 Expanded(
                   child: CustomButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      saveDataToDB();
+                    },
                     text: 'Save',
                   ),
                 ),
@@ -148,7 +176,9 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
                 ),
                 Expanded(
                   child: CustomButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      delete();
+                    },
                     text: 'Delete',
                   ),
                 ),

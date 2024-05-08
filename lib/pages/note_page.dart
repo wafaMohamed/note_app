@@ -94,7 +94,10 @@ class _NotePageState extends State<NotePage> {
             onTap: () {
               debugPrint('ListTile Tapped');
               Utils.navigatorPushToDetailsPage(
-                  context: context, title: 'Edit Note', note: noteList![index]);
+                  context: context,
+                  title: 'Edit Note',
+                  note: noteList![index],
+                  updateListView: updateListVew);
             },
             leading: CircleAvatar(
               backgroundColor: getPriorityColor(noteList![index].priority),
@@ -117,10 +120,10 @@ class _NotePageState extends State<NotePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Utils.navigatorPushToDetailsPage(
-            context: context,
-            title: 'Add Note',
-            note: Note('New Note', 2, DateTime.now()),
-          );
+              context: context,
+              title: 'Add Note',
+              note: Note('New Note', 2, DateTime.now()),
+              updateListView: updateListVew);
         },
         tooltip: 'F',
         child: const Icon(Icons.add),

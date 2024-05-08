@@ -7,12 +7,17 @@ class Utils {
   static navigatorPushToDetailsPage(
       {required String title,
       required BuildContext context,
-      required Note note}) {
-    Navigator.of(context).push(
+      Function? updateListView, // callback function
+
+      required Note note}) async {
+    bool value = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => NoteDetailsPage(title: title, note: note),
       ),
     );
+    if (value == true && updateListView != null) {
+      updateListView();
+    }
   }
 
   static showSnackBar(
